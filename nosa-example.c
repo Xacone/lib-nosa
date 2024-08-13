@@ -14,8 +14,8 @@ int main()
     char ip_string[16] = { 0 };      // Allocate enough space for an IPv4 address in dotted notation
 
     char* socketType = "TCP";  // #TODO UDP -> not working.
-                                     // Sadly, afd!AfdConnect() call [ExFreeToLookasideListEx] with a null value when it got a UDP conn
-   
+    // Sadly, afd!AfdConnect() call [ExFreeToLookasideListEx] with a null value when it got a UDP conn
+
     char* host = "google.com"; // #TODO -> subdomain queries not working for while.
     int port = 80;
 
@@ -44,6 +44,8 @@ int main()
     LPVOID packet_data_received = VirtualAlloc(0, MAX_RECV_BYTES, MEM_COMMIT | MEM_RESERVE, PAGE_READWRITE);
     memset(packet_data_received, 0, MAX_RECV_BYTES); // clear our created vm alloc
 
+    printf("Address: %p", packet_data_received);
+
     nosa_recv((HANDLE*)hSocket, packet_data_received);
 
     BYTE* bytePtr = packet_data_received;
@@ -57,5 +59,13 @@ int main()
         afd_close(hSocket);
     }
 
+    system("pause");
+
+    // Free the allocated memory
+    if (packet_data_received)
+    {
+        VirtualFree(packet_data_received, 0, MEM_RELEASE);
+    }
+
     return 0;
-}
+};
